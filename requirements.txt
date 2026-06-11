@@ -1,0 +1,16 @@
+# AWS SDK
+boto3==1.34.144
+botocore==1.34.144
+
+# Search
+tavily-python==0.3.3
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Testing
+pytest==8.2.2
+pytest-mock==3.14.0
+
+# Utilities
+pydantic==2.7.4
