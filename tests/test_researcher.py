@@ -120,3 +120,26 @@ def test_researcher_respects_max_results(
         query="AI",
         max_results=3
     )
+
+def test_researcher_strips_markdown_json_fences(
+    mock_tavily,
+    mock_bedrock,
+    sample_search_results
+):
+    mock_tavily.search.return_value = sample_search_results
+    fenced_response = """```json
+        {
+            "topic": "artificial intelligence",
+            "key_facts": ["AI is transforming industries"],
+            "conflicting_info": [],
+            "credible_sources": ["https://example.com"],
+            "summary": "AI is rapidly evolving."
+        }
+        ```"""
+    mock_bedrock.invoke.return_value = fenced_response
+
+    agent = ResearcherAgent()
+    result = agent.run(ResearchInput(topic="artificial intelligence"))
+
+    assert result.topic == "artificial intelligence"
+    assert len(result.key_facts) == 1
