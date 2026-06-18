@@ -241,3 +241,7 @@ samconfig.toml
 .vscode/
 .idea/
 .DS_Store
+package/
+deployment.zip
+output.json
+trust-policy.json
