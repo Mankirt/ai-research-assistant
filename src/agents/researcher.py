@@ -42,9 +42,14 @@ class ResearcherAgent:
 
         raw_response = self.bedrock.invoke(prompt=prompt, max_tokens=1000)
         logger.info("LLM response received")
-
+        cleaned_response = raw_response.strip()
+        if cleaned_response.startswith("```"):
+            cleaned_response = cleaned_response.split("```")[1]
+            if cleaned_response.startswith("json"):
+                cleaned_response = cleaned_response[4:]
+        cleaned_response = cleaned_response.strip()
         try:
-            parsed = json.loads(raw_response)
+            parsed = json.loads(cleaned_response)
             output = ResearchOutput(**parsed)
             logger.info("Research completed successfully")
             return output
