@@ -30,14 +30,6 @@ curl -X POST https://e1ncymtrq5.execute-api.us-east-1.amazonaws.com/ \
 - **API** — Amazon API Gateway
 - **Monitoring** — Amazon CloudWatch
 
-## Project Structure
-src/
-├── agents/      # Individual agent Lambda handlers
-├── utils/       # Shared utilities (Bedrock client, config)
-└── prompts/     # Prompt templates for each agent
-infra/           # Step Functions state machine definitions
-frontend/        # React UI (Phase 3)
-tests/           # Unit and integration tests
 
 ## Getting Started
 
