@@ -2,6 +2,18 @@
 
 A distributed multi-agent research pipeline built on AWS. Given a topic, multiple specialized AI agents collaborate to produce a well-researched, fact-checked report.
 
+## Live API
+
+The researcher agent is deployed and live on AWS Lambda + API Gateway:
+
+```bash
+curl -X POST https://e1ncymtrq5.execute-api.us-east-1.amazonaws.com/ \
+    -H "Content-Type: application/json" \
+    -d '{"topic": "your topic here"}'
+```
+
+**Architecture:** API Gateway → Lambda → Tavily (web search) → Amazon Bedrock (Claude Haiku 4.5) → structured JSON response
+
 ## Architecture
 
 - **Researcher Agent** — searches the web for relevant sources
