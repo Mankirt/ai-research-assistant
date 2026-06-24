@@ -39,7 +39,7 @@ def test_invoke_calls_correct_model(mock_bedrock_client):
     client.invoke("Test prompt")
 
     call_args = mock_bedrock_client.invoke_model.call_args
-    assert "anthropic.claude-3-haiku" in call_args.kwargs["modelId"]
+    assert "anthropic.claude-haiku-4-5" in call_args.kwargs["modelId"]
 
 
 def test_invoke_raises_on_client_error(mock_bedrock_client):
