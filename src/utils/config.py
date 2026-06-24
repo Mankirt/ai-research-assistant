@@ -9,7 +9,7 @@ class Config:
     TAVILY_API_KEY: str = os.getenv("TAVILY_API_KEY", "")
     BEDROCK_MODEL_ID: str = os.getenv(
         "BEDROCK_MODEL_ID",
-        "anthropic.claude-3-haiku-20240307-v1:0"
+        "us.anthropic.claude-haiku-4-5-20251001-v1:0"
     )
 
     @classmethod
