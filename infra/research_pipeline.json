@@ -1,0 +1,76 @@
+{
+  "Comment": "Multi-agent research pipeline: Researcher -> Fact Checker -> Writer -> Critic",
+  "StartAt": "Research",
+  "States": {
+    "Research": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:513616570472:function:ai-researcher-agent",
+      "Next": "FactCheck",
+      "Retry": [
+        {
+          "ErrorEquals": ["Lambda.ServiceException", "Lambda.AWSLambdaException"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ],
+      "ResultSelector": {
+        "body.$": "$.body"
+    },
+      "ResultPath": "$.researchResult"
+    },
+    "FactCheck": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:513616570472:function:ai-fact-checker-agent",
+      "InputPath": "$.researchResult.body",
+      "Next": "Write",
+      "Retry": [
+        {
+          "ErrorEquals": ["Lambda.ServiceException", "Lambda.AWSLambdaException"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ],
+      "ResultSelector": {
+        "body.$": "$.body"
+        },
+      "ResultPath": "$.factCheckResult"
+    },
+    "Write": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:513616570472:function:ai-writer-agent",
+      "InputPath": "$.factCheckResult.body",
+      "Next": "Critique",
+      "Retry": [
+        {
+          "ErrorEquals": ["Lambda.ServiceException", "Lambda.AWSLambdaException"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ],
+      "ResultSelector": {
+        "body.$": "$.body"
+      },
+      "ResultPath": "$.writerResult"
+    },
+    "Critique": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:513616570472:function:ai-critic-agent",
+      "InputPath": "$.writerResult.body",
+      "End": true,
+      "Retry": [
+        {
+          "ErrorEquals": ["Lambda.ServiceException", "Lambda.AWSLambdaException"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ],
+      "ResultSelector": {
+        "body.$": "$.body"
+     }
+    }
+  }
+}

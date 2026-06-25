@@ -85,3 +85,12 @@ def test_handler_never_exposes_internal_errors():
     body = json.loads(response["body"])
     assert "Secret internal database" not in body["error"]
     assert body["error"] == "Internal server error"
+
+def test_handler_accepts_raw_string_event(handler):
+    # Step Functions passes the previous state's output body directly as a string
+    event = json.dumps({"topic": "test topic"})
+    response = handler(event, None)
+
+    assert response["statusCode"] == 200
+    body = json.loads(response["body"])
+    assert body["topic"] == "test topic"
