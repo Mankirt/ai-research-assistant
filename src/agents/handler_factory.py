@@ -16,7 +16,9 @@ def create_lambda_handler(agent_class, input_model: Type[BaseModel]):
         logger.info(f"Lambda invoked with event: {json.dumps(event)}")
 
         try:
-            if isinstance(event.get("body"), str):
+            if isinstance(event, str):
+                body = json.loads(event)
+            elif isinstance(event.get("body"), str):
                 body = json.loads(event["body"])
             else:
                 body = event.get("body", event)
