@@ -21,6 +21,19 @@ curl -X POST https://e1ncymtrq5.execute-api.us-east-1.amazonaws.com/ \
 - **Writer Agent** — produces a structured markdown report
 - **Critic Agent** — reviews and scores the report
 
+## Deployed Agents
+
+All 4 agents are deployed as independent AWS Lambda functions:
+
+| Agent | Function | Role |
+|---|---|---|
+| Researcher | `ai-researcher-agent` | Searches the web, extracts key facts |
+| Fact Checker | `ai-fact-checker-agent` | Validates facts, assigns confidence scores |
+| Writer | `ai-writer-agent` | Generates structured markdown reports |
+| Critic | `ai-critic-agent` | Scores report quality, suggests improvements |
+
+Next: orchestrated as a single pipeline via AWS Step Functions.
+
 ## Tech Stack
 
 - **Orchestration** — AWS Step Functions
