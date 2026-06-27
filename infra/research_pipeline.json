@@ -1,10 +1,37 @@
 {
-  "Comment": "Multi-agent research pipeline: Researcher -> Fact Checker -> Writer -> Critic",
-  "StartAt": "Research",
+  "Comment": "Multi-agent research pipeline with caching: CacheCheck -> [Research -> FactCheck -> Write -> Critique -> SaveResult]",
+  "StartAt": "CacheCheck",
   "States": {
+    "CacheCheck": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:513616570472:function:ai-cache-check",
+      "Next": "IsCached",
+      "ResultSelector": {
+        "cache_hit.$": "$.cache_hit",
+        "body.$": "$.body"
+      },
+      "ResultPath": "$.cacheResult"
+    },
+    "IsCached": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.cacheResult.cache_hit",
+          "BooleanEquals": true,
+          "Next": "ReturnCached"
+        }
+      ],
+      "Default": "Research"
+    },
+    "ReturnCached": {
+      "Type": "Pass",
+      "InputPath": "$.cacheResult.body",
+      "End": true
+    },
     "Research": {
       "Type": "Task",
       "Resource": "arn:aws:lambda:us-east-1:513616570472:function:ai-researcher-agent",
+      "InputPath": "$.cacheResult.body",
       "Next": "FactCheck",
       "Retry": [
         {
@@ -16,7 +43,7 @@
       ],
       "ResultSelector": {
         "body.$": "$.body"
-    },
+      },
       "ResultPath": "$.researchResult"
     },
     "FactCheck": {
@@ -34,7 +61,7 @@
       ],
       "ResultSelector": {
         "body.$": "$.body"
-        },
+      },
       "ResultPath": "$.factCheckResult"
     },
     "Write": {
@@ -59,6 +86,24 @@
       "Type": "Task",
       "Resource": "arn:aws:lambda:us-east-1:513616570472:function:ai-critic-agent",
       "InputPath": "$.writerResult.body",
+      "Next": "SaveResult",
+      "Retry": [
+        {
+          "ErrorEquals": ["Lambda.ServiceException", "Lambda.AWSLambdaException"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ],
+      "ResultSelector": {
+        "body.$": "$.body"
+      },
+      "ResultPath": "$.critiqueResult"
+    },
+    "SaveResult": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:513616570472:function:ai-save-result",
+      "InputPath": "$.critiqueResult.body",
       "End": true,
       "Retry": [
         {
@@ -70,7 +115,7 @@
       ],
       "ResultSelector": {
         "body.$": "$.body"
-     }
+      }
     }
   }
 }

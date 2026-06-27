@@ -64,3 +64,22 @@ def test_handles_db_failure_gracefully(mock_db):
 
     assert response["statusCode"] == 500
     assert response["cache_hit"] is False
+
+def test_cache_hit_serializes_decimal_fields(mock_db):
+    from decimal import Decimal
+
+    mock_db.get_cached_research.return_value = {
+        "research_id": "abc-123",
+        "result": {
+            "topic": "AI",
+            "score": Decimal("8"),
+            "summary": "cached summary"
+        }
+    }
+
+    event = {"body": json.dumps({"topic": "AI"})}
+    response = lambda_handler(event, None)
+
+    assert response["statusCode"] == 200
+    body = json.loads(response["body"])
+    assert body["score"] == 8
