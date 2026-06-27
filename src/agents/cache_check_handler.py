@@ -1,7 +1,15 @@
 import json
+from decimal import Decimal
 from src.utils.dynamodb_client import DynamoDBClient
 from src.utils.logger import get_logger
 
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return int(obj) if obj % 1 == 0 else float(obj)
+        return super().default(obj)
+    
 logger = get_logger(__name__)
 
 
@@ -31,7 +39,7 @@ def lambda_handler(event: dict, context) -> dict:
             return {
                 "statusCode": 200,
                 "cache_hit": True,
-                "body": json.dumps(cached["result"])
+                "body": json.dumps(cached["result"], cls=DecimalEncoder)
             }
 
         logger.info(f"Cache miss for topic: {topic}")
