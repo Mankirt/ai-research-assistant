@@ -11,6 +11,7 @@ class Config:
         "BEDROCK_MODEL_ID",
         "us.anthropic.claude-haiku-4-5-20251001-v1:0"
     )
+    STATE_MACHINE_ARN: str = os.getenv("STATE_MACHINE_ARN", "")
 
     @classmethod
     def validate(cls):
