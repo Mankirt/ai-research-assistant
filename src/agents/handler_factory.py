@@ -15,6 +15,15 @@ def create_lambda_handler(agent_class, input_model: Type[BaseModel]):
     def lambda_handler(event: dict, context) -> dict:
         logger.info(f"Lambda invoked with event: {json.dumps(event)}")
 
+        request_context = event.get("requestContext", {}) if isinstance(event, dict) else {}
+        http_method = request_context.get("http", {}).get("method", "")
+        if http_method == "OPTIONS":
+            return {
+                "statusCode": 200,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps({})
+            }
+
         try:
             if isinstance(event, str):
                 body = json.loads(event)

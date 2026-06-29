@@ -94,3 +94,12 @@ def test_handler_accepts_raw_string_event(handler):
     assert response["statusCode"] == 200
     body = json.loads(response["body"])
     assert body["topic"] == "test topic"
+
+def test_handler_short_circuits_options_preflight(handler):
+    event = {
+        "requestContext": {"http": {"method": "OPTIONS"}},
+        "body": None
+    }
+    response = handler(event, None)
+
+    assert response["statusCode"] == 200
