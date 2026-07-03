@@ -87,7 +87,7 @@ def test_researcher_calls_tavily_with_correct_topic(
 
     mock_tavily.search.assert_called_once_with(
         query="quantum computing",
-        max_results=5
+        max_results=10
     )
 
 

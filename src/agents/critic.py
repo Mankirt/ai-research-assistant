@@ -20,6 +20,8 @@ class CriticOutput(BaseModel):
     suggested_improvements: list[str]
     verdict: str
     critique_summary: str
+    report_markdown: str = ""
+    title: str = ""
 
 
 class CriticAgent:
@@ -43,7 +45,11 @@ class CriticAgent:
 
         try:
             parsed = json.loads(cleaned_response)
-            output = CriticOutput(**parsed)
+            output = CriticOutput(
+                **parsed,
+                report_markdown=input_data.report_markdown,
+                title=input_data.title
+            )
             logger.info("Critique completed successfully")
             return output
 

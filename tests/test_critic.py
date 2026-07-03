@@ -51,6 +51,8 @@ def test_critic_runs_successfully(
     assert result.verdict == "approved"
     assert len(result.weaknesses) == 1
     assert len(result.suggested_improvements) == 2
+    assert result.report_markdown == "# The State of AI\n\nAI is transforming industries..."
+    assert result.title == "The State of AI in 2026"
 
 
 def test_critic_strips_markdown_fences(
@@ -106,3 +108,11 @@ def test_critic_verdict_matches_low_score(
 
     assert result.score == 3
     assert result.verdict == "needs_revision"
+
+@pytest.fixture
+def sample_input():
+    return CriticInput(
+        topic="artificial intelligence",
+        title="The State of AI in 2026",
+        report_markdown="# The State of AI\n\nAI is transforming industries..."
+    )

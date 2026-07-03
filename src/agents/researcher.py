@@ -10,7 +10,7 @@ logger = get_logger(__name__)
 
 class ResearchInput(BaseModel):
     topic: str
-    max_results: int = 5
+    max_results: int = 10
 
 
 class ResearchOutput(BaseModel):
