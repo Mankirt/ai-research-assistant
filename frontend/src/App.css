@@ -150,6 +150,18 @@ body {
   color: #8B7355;
 }
 
+.trail li.pending .trail-mark {
+  color: #c8c0b0;
+}
+
+.trail li.pending .trail-label {
+  color: #a39c8a;
+}
+
+.trail li.pending .trail-action {
+  color: #c8c0b0;
+}
+
 .trail-label {
   font-family: 'Source Serif 4', serif;
   font-size: 1rem;
