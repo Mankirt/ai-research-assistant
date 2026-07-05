@@ -43,6 +43,13 @@ def lambda_handler(event: dict, context) -> dict:
             "headers": {"Content-Type": "application/json"},
             "body": json.dumps({"error": "topic is required"})
         }
+    
+    if len(topic) > 200:
+        return {
+            "statusCode": 422,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"error": "Topic must be under 200 characters"})
+        }
 
     try:
         sf_client = boto3.client("stepfunctions", region_name=Config.AWS_REGION)

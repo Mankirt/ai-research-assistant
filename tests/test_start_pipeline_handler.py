@@ -57,3 +57,12 @@ def test_start_execution_failure_returns_500(mock_sfn_client):
     response = lambda_handler(event, None)
 
     assert response["statusCode"] == 500
+
+def test_topic_too_long_returns_422(mock_sfn_client):
+    long_topic = "a" * 201
+    event = {"body": json.dumps({"topic": long_topic})}
+    response = lambda_handler(event, None)
+
+    assert response["statusCode"] == 422
+    body = json.loads(response["body"])
+    assert "200 characters" in body["error"]
