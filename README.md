@@ -2,6 +2,8 @@
 
 A distributed multi-agent research pipeline built from scratch on AWS — no LangChain, no agent frameworks. Four specialized AI agents collaborate to research, fact-check, write, and critique any topic, orchestrated by AWS Step Functions.
 
+**[Live Demo](https://d3q01wfwtbi754.cloudfront.net)**
+
 ---
 
 ## What It Does
@@ -23,6 +25,27 @@ The full pipeline runs in ~35 seconds. Repeat queries return instantly from Dyna
 
 ![Architecture](docs/architecture.svg)
 
+```
+Browser
+  ↓ POST /start
+API Gateway → Start Pipeline Lambda (returns execution_arn instantly)
+  ↓ StartExecution
+AWS Step Functions
+  ├── Cache Check Lambda → DynamoDB
+  │     ├── Cache HIT  → Return instantly (~2s)
+  │     └── Cache MISS → Continue pipeline
+  ├── Researcher Lambda → Tavily Search API → Amazon Bedrock
+  ├── Fact Checker Lambda → Amazon Bedrock
+  ├── Writer Lambda → Amazon Bedrock
+  ├── Critic Lambda → Amazon Bedrock
+  └── Save Result Lambda → DynamoDB
+  ↓
+Amazon DynamoDB (research_runs table · 24hr TTL cache)
+  ↓
+Pipeline Status Lambda
+  ↓
+Browser polls GET /status every 2s → renders result when SUCCEEDED
+```
 
 ---
 
